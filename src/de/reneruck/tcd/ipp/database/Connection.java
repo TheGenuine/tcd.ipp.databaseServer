@@ -23,6 +23,7 @@ public class Connection extends Thread {
 	public Connection(Socket connection) {
 		this.connection = connection;
 		this.running = true;
+		this.start();
 	}
 
 	@Override
@@ -48,6 +49,7 @@ public class Connection extends Thread {
 	
 	private void send(String message) {
 		try {
+			System.out.println("Sending> " + message);
 			this.out.writeObject(message);
 			this.out.flush();
 		} catch (IOException e) {
@@ -59,7 +61,7 @@ public class Connection extends Thread {
 		if(input instanceof String)
 		{
 			String message = (String) input;
-			System.out.println("Received " + message);
+			System.out.println("<Received " + message);
 			
 			if(message.equals(Statics.ACK+Statics.ACK)){
 				this.clientAck = true;
@@ -97,7 +99,7 @@ public class Connection extends Thread {
 				Class<?> transitionClass = Class.forName(split[0]);
 				Transition fromJson = (Transition) this.gson.fromJson(split[1].trim(), transitionClass);
 				System.out.println("Successfully deserialized ");
-				System.out.println(fromJson.getBookingId());
+				System.out.println("ID: " + fromJson.getBookingId());
 			} catch (ClassNotFoundException e) {
 				e.getMessage();
 				System.err.println("Discarding");
