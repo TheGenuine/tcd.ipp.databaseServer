@@ -1,11 +1,10 @@
 package de.reneruck.tcd.ipp.database;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -18,12 +17,16 @@ public class DatabaseServer extends Thread {
 	private ServerSocket socket;
 	private Queue<Transition> dbQueue = new LinkedBlockingQueue<Transition>(new LinkedList<Transition>());
 	private DatabaseQueryHandler queryHandler;
-	private List<Connection> connections = new ArrayList<Connection>();
+	private DatabaseDiscoveryServiceHandler discoveryHandler;
 
 	public DatabaseServer() {
 		this.queryHandler = new DatabaseQueryHandler(this.dbQueue);
 		this.queryHandler.setRunning(true);
 		this.queryHandler.start();
+		
+		this.discoveryHandler = new DatabaseDiscoveryServiceHandler();
+		this.discoveryHandler.setRunning(true);
+		this.discoveryHandler.start();
 	}
 	
 	@Override
@@ -50,16 +53,14 @@ public class DatabaseServer extends Thread {
 			System.out.println("waiting for incoming connection");
 			Socket connection = this.socket.accept();
 			System.out.println("Connection received from " + connection.getInetAddress().getHostName());
-			Connection conn = new Connection(connection);
-			conn.start();
-			this.connections.add(conn);
+			new Connection(connection);
 		} catch (IOException e) {
 			System.err.println("Cannot read from channel " + e.getMessage());
 		}
 	}
 
 	private void bind() throws IOException {
-		this.socket = new ServerSocket(Statics.DB_SERVER_PORT, 10);
+		this.socket = new ServerSocket(Statics.DB_SERVER_PORT, 10, InetAddress.getLocalHost());
 	}
 
 	public boolean isRunning() {
