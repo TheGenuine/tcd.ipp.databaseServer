@@ -17,14 +17,14 @@ public class DatabaseServer extends Thread {
 	private ServerSocket socket;
 	private Queue<Transition> dbQueue = new LinkedBlockingQueue<Transition>(new LinkedList<Transition>());
 	private DatabaseQueryHandler queryHandler;
-	private DatabaseDiscoveryServiceHandler discoveryHandler;
+	private DatabaseDiscoveryService discoveryHandler;
 
 	public DatabaseServer() {
 		this.queryHandler = new DatabaseQueryHandler(this.dbQueue);
 		this.queryHandler.setRunning(true);
 		this.queryHandler.start();
 		
-		this.discoveryHandler = new DatabaseDiscoveryServiceHandler();
+		this.discoveryHandler = new DatabaseDiscoveryService();
 		this.discoveryHandler.setRunning(true);
 		this.discoveryHandler.start();
 	}
