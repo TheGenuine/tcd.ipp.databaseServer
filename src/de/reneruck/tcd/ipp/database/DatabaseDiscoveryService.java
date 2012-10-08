@@ -52,18 +52,6 @@ public class DatabaseDiscoveryService extends Thread {
 		}
 	}
 
-	private InetAddress getBroadcastAdress() {
-		try {
-			InetAddress localhost = InetAddress.getLocalHost();
-			byte[] address = localhost.getAddress();
-			address[3] = -1;
-			return InetAddress.getByAddress(address);
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
 	public boolean isRunning() {
 		return running;
 	}
