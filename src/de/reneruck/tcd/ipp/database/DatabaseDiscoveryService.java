@@ -41,7 +41,7 @@ public class DatabaseDiscoveryService extends Thread {
 	private void sendBroadcast() {
 		try {
 			InetAddress group = InetAddress.getByName("230.0.0.1");
-			DatagramPacket packet = new DatagramPacket(new byte[100], 100, group, Statics.DISCOVERY_PORT + 1);
+			DatagramPacket packet = new DatagramPacket(new byte[100], 100, group, Statics.DISCOVERY_PORT);
 			this.socket.send(packet);
 			
 			Thread.sleep(5000);
