@@ -59,8 +59,9 @@ public class SendData implements Action, Callback {
 		this.sender = null;
 		try {
 			this.out.writeObject(new Datagram(Statics.FIN));
+			this.out.flush();
 			try {
-				// TODO: let the fsm handle Statics.FINISH_RX_HELI
+				// FIXME: let the fsm handle Statics.FINISH_RX_HELI
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

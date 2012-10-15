@@ -32,6 +32,7 @@ public class DataSender extends Thread {
 				datagramContent.put(Statics.CONTENT_TRANSITION, transition);
 				try {
 					this.out.writeObject(new Datagram(Statics.DATA, datagramContent));
+					this.out.flush();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

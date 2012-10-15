@@ -19,6 +19,7 @@ public class SendControlSignal implements Action {
 	@Override
 	public void execute(TransitionEvent event) throws Exception {
 		this.out.writeObject(new Datagram(signal));
+		this.out.flush();
 	}
 
 }

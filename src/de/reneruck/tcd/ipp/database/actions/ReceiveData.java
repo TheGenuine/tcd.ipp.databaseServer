@@ -1,5 +1,6 @@
 package de.reneruck.tcd.ipp.database.actions;
 
+import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,12 +36,17 @@ public class ReceiveData implements Action {
 		Object content = event.getParameter(Statics.CONTENT_TRANSITION);
 		if(content != null && content instanceof Transition) {
 			this.queue.add((Transition)content);
-			Map<String, Object> datagramPayload = new HashMap<String, Object>();
-			datagramPayload.put(Statics.TRAMSITION_ID, ((Transition)content).getTransitionId());
-			this.out.writeObject(new Datagram(Statics.ACK, datagramPayload));
+			sendAck(content);
 		} else {
 			System.err.println("Invalid event content");
 		}
+	}
+
+	private void sendAck(Object content) throws IOException {
+		Map<String, Object> datagramPayload = new HashMap<String, Object>();
+		datagramPayload.put(Statics.TRAMSITION_ID, ((Transition)content).getTransitionId());
+		this.out.writeObject(new Datagram(Statics.ACK, datagramPayload));
+		this.out.flush();
 	}
 
 	private void startServer() {
