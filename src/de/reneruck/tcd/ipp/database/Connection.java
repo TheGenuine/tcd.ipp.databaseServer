@@ -143,7 +143,7 @@ public class Connection extends Thread {
 	private TransitionEvent getTransitionEventFromDatagram(Datagram input) {
 		TransitionEvent event = new TransitionEvent(input.getType());
 		for (String key : input.getKeys()) {
-			event.addParameter(key, input.getContent(key));
+			event.addParameter(key, input.getPayload(key));
 		}
 		return event;
 	}
