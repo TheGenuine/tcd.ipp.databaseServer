@@ -46,4 +46,8 @@ public class TransitionsQueue {
 			removeTransition(transitionById);
 		}
 	}
+
+	public boolean containsTransition(Transition transition) {
+		return this.transitions.contains(transition);
+	}
 }
