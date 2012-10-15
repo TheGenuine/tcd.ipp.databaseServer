@@ -34,11 +34,13 @@ public class DatabaseQueryHandler extends Thread {
 		try {
 			if(TransitionState.ACKNOWLEGED.equals(transition.getTransitionState()) && this.transitionQueue.containsTransition(transition)) {
 				this.transitionQueue.removeTransition(transition);
-			} else {
+			} else if(TransitionState.PENDING.equals(transition.getTransitionState()) ) {
 				transition.performTransition(new DatabaseConnection());
 				transition.setTransitionState(TransitionState.PROCESSED);
 				transition.setHandlingDate(new Date(System.currentTimeMillis()));
 				this.transitionQueue.addTransition(transition);
+			} else {
+				System.err.println("Invalid System TransitionState: " + transition.getTransitionState() + " no processing");
 			}
 		} catch (ConnectException e) {
 			e.printStackTrace();

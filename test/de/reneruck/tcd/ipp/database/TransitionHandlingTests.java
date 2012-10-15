@@ -68,6 +68,20 @@ public class TransitionHandlingTests {
 		assertFalse(this.transitionsQueue.containsTransition(transition2));
 	}
 
+	@Test
+	public void testProcessedTransition() {
+		Booking booking = new Booking("test", null, null);
+		NewBookingTransition transition = new NewBookingTransition(booking);
+		transition.setTransitionState(TransitionState.PROCESSED);
+		transition.setHandlingDate(new Date(System.currentTimeMillis()));
+		this.dbQueue.add(transition);
+		
+		sleep();
+		
+		assertFalse(this.transitionsQueue.containsTransition(transition));
+	}
+	
+	
 	private void sleep() {
 		try {
 			Thread.sleep(500);
