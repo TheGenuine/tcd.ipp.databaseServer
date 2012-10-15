@@ -4,16 +4,18 @@ import java.net.ConnectException;
 import java.util.Queue;
 
 import de.reneruck.tcd.ipp.datamodel.DatabaseConnection;
-import de.reneruck.tcd.ipp.datamodel.NewBookingTransition;
 import de.reneruck.tcd.ipp.datamodel.Transition;
+import de.reneruck.tcd.ipp.datamodel.TransitionState;
 
 public class DatabaseQueryHandler extends Thread {
 
 	private boolean running = false;
 	private Queue<Transition> queue;
+	private TransitionsQueue transitionQueue;
 	
-	public DatabaseQueryHandler(Queue<Transition> queue) {
+	public DatabaseQueryHandler(Queue<Transition> queue, TransitionsQueue transitionsQueue) {
 		this.queue = queue;
+		this.transitionQueue = transitionsQueue;
 	}
 
 	@Override
@@ -29,7 +31,12 @@ public class DatabaseQueryHandler extends Thread {
 	private void applyTransition(Transition transition) {
 		System.out.println("[DBQueryHandler] Handling transition " + transition.getBookingId());
 		try {
-			transition.performTransition(new DatabaseConnection());
+			if(TransitionState.ACKNOWLEGED.equals(transition.getTransitionState())) {
+				this.transitionQueue.removeTransition(transition);
+			} else {
+				transition.performTransition(new DatabaseConnection());
+			}
+			
 		} catch (ConnectException e) {
 			e.printStackTrace();
 		}
