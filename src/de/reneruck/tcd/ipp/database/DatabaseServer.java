@@ -8,8 +8,8 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import de.reneruck.tcd.datamodel.Statics;
-import de.reneruck.tcd.datamodel.Transition;
+import de.reneruck.tcd.ipp.datamodel.Statics;
+import de.reneruck.tcd.ipp.datamodel.Transition;
 
 public class DatabaseServer extends Thread {
 

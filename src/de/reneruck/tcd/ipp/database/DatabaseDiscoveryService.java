@@ -6,7 +6,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 
-import de.reneruck.tcd.datamodel.Statics;
+import de.reneruck.tcd.ipp.datamodel.Statics;
 
 public class DatabaseDiscoveryService extends Thread {
 

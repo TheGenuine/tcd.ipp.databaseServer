@@ -8,8 +8,8 @@ import java.net.Socket;
 
 import com.google.gson.Gson;
 
-import de.reneruck.tcd.datamodel.Statics;
-import de.reneruck.tcd.datamodel.Transition;
+import de.reneruck.tcd.ipp.datamodel.Statics;
+import de.reneruck.tcd.ipp.datamodel.Transition;
 
 public class Connection extends Thread {
 
