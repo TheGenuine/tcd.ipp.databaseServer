@@ -1,6 +1,7 @@
 package de.reneruck.tcd.ipp.database;
 
 import java.net.ConnectException;
+import java.util.Date;
 import java.util.Queue;
 
 import de.reneruck.tcd.ipp.datamodel.DatabaseConnection;
@@ -31,12 +32,14 @@ public class DatabaseQueryHandler extends Thread {
 	private void applyTransition(Transition transition) {
 		System.out.println("[DBQueryHandler] Handling transition " + transition.getBookingId());
 		try {
-			if(TransitionState.ACKNOWLEGED.equals(transition.getTransitionState())) {
+			if(TransitionState.ACKNOWLEGED.equals(transition.getTransitionState()) && this.transitionQueue.containsTransition(transition)) {
 				this.transitionQueue.removeTransition(transition);
 			} else {
 				transition.performTransition(new DatabaseConnection());
+				transition.setTransitionState(TransitionState.PROCESSED);
+				transition.setHandlingDate(new Date(System.currentTimeMillis()));
+				this.transitionQueue.addTransition(transition);
 			}
-			
 		} catch (ConnectException e) {
 			e.printStackTrace();
 		}
