@@ -3,8 +3,9 @@ package de.reneruck.tcd.ipp.database;
 import java.net.ConnectException;
 import java.util.Queue;
 
-import de.reneruck.tcd.datamodel.NewBookingTransition;
-import de.reneruck.tcd.datamodel.Transition;
+import de.reneruck.tcd.ipp.datamodel.DatabaseConnection;
+import de.reneruck.tcd.ipp.datamodel.NewBookingTransition;
+import de.reneruck.tcd.ipp.datamodel.Transition;
 
 public class DatabaseQueryHandler extends Thread {
 
@@ -27,32 +28,10 @@ public class DatabaseQueryHandler extends Thread {
 	
 	private void applyTransition(Transition transition) {
 		System.out.println("[DBQueryHandler] Handling transition " + transition.getBookingId());
-		boolean bookingExists = false;
 		try {
-			bookingExists = MySqlConnection.bookingExists(transition.getBookingId());
-		} catch (ConnectException e1) {
-			e1.printStackTrace();
-		}
-		
-		String generateSql = transition.generateSql();
-		System.out.println(generateSql);
-		if(!bookingExists)
-		{
-			if(transition instanceof NewBookingTransition)
-			{
-				try {
-					MySqlConnection.executeSql(generateSql);
-				} catch (ConnectException e) {
-					e.printStackTrace();
-				}
-			}
-			// TODO: what to do??
-		} else {
-			try {
-				MySqlConnection.executeSql(generateSql);
-			} catch (ConnectException e) {
-				e.printStackTrace();
-			}
+			transition.performTransition(new DatabaseConnection());
+		} catch (ConnectException e) {
+			e.printStackTrace();
 		}
 	}
 
