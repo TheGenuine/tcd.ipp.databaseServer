@@ -12,9 +12,9 @@ public class DatabaseQueryHandler extends Thread {
 
 	private boolean running = false;
 	private Queue<Transition> queue;
-	private TransitionsQueue transitionQueue;
+	private TemporalTransitionsStore transitionQueue;
 	
-	public DatabaseQueryHandler(Queue<Transition> queue, TransitionsQueue transitionsQueue) {
+	public DatabaseQueryHandler(Queue<Transition> queue, TemporalTransitionsStore transitionsQueue) {
 		this.queue = queue;
 		this.transitionQueue = transitionsQueue;
 	}
@@ -25,6 +25,11 @@ public class DatabaseQueryHandler extends Thread {
 			if(!this.queue.isEmpty())
 			{
 				applyTransition(this.queue.poll());
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}

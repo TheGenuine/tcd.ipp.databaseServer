@@ -16,12 +16,12 @@ public class DatabaseServer extends Thread {
 	private boolean running = false;
 	private ServerSocket socket;
 	private Queue<Transition> dbQueue = new LinkedBlockingQueue<Transition>(new LinkedList<Transition>());
-	private TransitionsQueue transitionsQueue = new TransitionsQueue();
+	private TemporalTransitionsStore transitionsStore = new TemporalTransitionsStore();
 	private DatabaseQueryHandler queryHandler;
 	private DatabaseDiscoveryService discoveryHandler;
 
 	public DatabaseServer() {
-		this.queryHandler = new DatabaseQueryHandler(this.dbQueue, this.transitionsQueue);
+		this.queryHandler = new DatabaseQueryHandler(this.dbQueue, this.transitionsStore);
 		this.queryHandler.setRunning(true);
 		this.queryHandler.start();
 		
@@ -54,7 +54,7 @@ public class DatabaseServer extends Thread {
 			System.out.println("waiting for incoming connection");
 			Socket connection = this.socket.accept();
 			System.out.println("Connection received from " + connection.getInetAddress().getHostName());
-			new Connection(connection);
+			new Connection(connection, this.transitionsStore);
 		} catch (IOException e) {
 			System.err.println("Cannot read from channel " + e.getMessage());
 		}

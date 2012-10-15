@@ -1,14 +1,14 @@
 package de.reneruck.tcd.ipp.database;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import de.reneruck.tcd.ipp.datamodel.Transition;
 import de.reneruck.tcd.ipp.datamodel.TransitionState;
 
-public class TransitionsQueue {
+public class TemporalTransitionsStore {
 
-	private List<Transition> transitions = new LinkedList();
+	private Set<Transition> transitions = new LinkedHashSet<Transition>();
 	
 	public Transition getTransitionById(long transitionId) {
 		for (Transition transition : this.transitions) {
@@ -20,9 +20,9 @@ public class TransitionsQueue {
 		return null;
 	}
 	
-	public List<Transition> getAllTransitionsByState(TransitionState state)
+	public Set<Transition> getAllTransitionsByState(TransitionState state)
 	{
-		List<Transition> result = new LinkedList<Transition>();
+		Set<Transition> result = new LinkedHashSet<Transition>();
 		for (Transition transition : this.transitions) {
 			if(state.equals(transition.getTransitionState()))
 			{

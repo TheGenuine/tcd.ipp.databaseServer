@@ -18,12 +18,12 @@ import de.reneruck.tcd.ipp.datamodel.TransitionState;
 public class TransitionHandlingTests {
 
 	private Queue<Transition> dbQueue;
-	private TransitionsQueue transitionsQueue;
+	private TemporalTransitionsStore transitionsQueue;
 
 	@Before
 	public void setUp() throws Exception {
 		this.dbQueue = new LinkedBlockingQueue<Transition>(new LinkedList<Transition>());
-		this.transitionsQueue = new TransitionsQueue();
+		this.transitionsQueue = new TemporalTransitionsStore();
 		
 		DatabaseQueryHandler queryHandler = new DatabaseQueryHandler(dbQueue, transitionsQueue);
 		queryHandler.setRunning(true);
