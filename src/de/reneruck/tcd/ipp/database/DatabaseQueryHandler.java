@@ -37,7 +37,7 @@ public class DatabaseQueryHandler extends Thread {
 	private void applyTransition(Transition transition) {
 		System.out.println("[DBQueryHandler] Handling transition " + transition.getBookingId());
 		try {
-			if(TransitionState.ACKNOWLEGED.equals(transition.getTransitionState()) && this.transitionQueue.containsTransition(transition)) {
+			if(TransitionState.ACKNOWLEGED.equals(transition.getTransitionState())) {
 				this.transitionQueue.removeTransition(transition);
 			} else if(TransitionState.PENDING.equals(transition.getTransitionState()) ) {
 				transition.performTransition(new DatabaseConnection());
