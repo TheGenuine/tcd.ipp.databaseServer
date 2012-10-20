@@ -14,7 +14,7 @@ public class ShutdownConnection implements Action {
 
 	@Override
 	public void execute(TransitionEvent event) throws Exception {
-		this.connection.setRunning(false);
+		this.connection.shutdown();
 	}
 
 }

@@ -11,6 +11,7 @@ import de.reneruck.tcd.ipp.datamodel.Datagram;
 import de.reneruck.tcd.ipp.datamodel.Statics;
 import de.reneruck.tcd.ipp.datamodel.TemporalTransitionsStore;
 import de.reneruck.tcd.ipp.datamodel.Transition;
+import de.reneruck.tcd.ipp.datamodel.TransitionExchangeBean;
 import de.reneruck.tcd.ipp.datamodel.TransitionState;
 import de.reneruck.tcd.ipp.fsm.Action;
 import de.reneruck.tcd.ipp.fsm.TransitionEvent;
@@ -21,14 +22,21 @@ public class SendData implements Action, Callback {
 	private DataSender sender;
 	private Map<Long, Transition> dataset = new HashMap<Long, Transition>();
 	private TemporalTransitionsStore transitionsStore;
+	private TransitionExchangeBean bean;
 
-	public SendData(ObjectOutputStream out, TemporalTransitionsStore transitionsStore ) {
-		this.out = out;
+	public SendData(TransitionExchangeBean transitionExchangeBean, TemporalTransitionsStore transitionsStore ) {
+		this.bean = transitionExchangeBean;
 		this.transitionsStore = transitionsStore;
 	}
 
 	@Override
 	public void execute(TransitionEvent event) throws Exception {
+		if(this.out == null) {
+			this.out = this.bean.getOut();
+		}
+		
+		send(Statics.RX_HELI_ACK);
+		
 		if(this.sender == null) {
 			initializeDataSender();
 		}
@@ -58,16 +66,21 @@ public class SendData implements Action, Callback {
 	public void handleCallback() {
 		this.sender = null;
 		try {
-			this.out.writeObject(new Datagram(Statics.FIN));
-			this.out.flush();
-			try {
-				// FIXME: let the fsm handle Statics.FINISH_RX_HELI
-			} catch (Exception e) {
-				e.printStackTrace();
+			if(this.out == null) {
+				this.out = this.bean.getOut();
 			}
+			send(Statics.FIN);
+			this.bean.getFsm().handleEvent(new TransitionEvent(Statics.FINISH_RX_HELI));
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+	}
+
+	private void send(String message) throws IOException {
+		this.out.writeObject(new Datagram(message));
+		this.out.flush();
 	}
 
 }

@@ -15,6 +15,7 @@ import de.reneruck.tcd.ipp.database.actions.ShutdownConnection;
 import de.reneruck.tcd.ipp.datamodel.Datagram;
 import de.reneruck.tcd.ipp.datamodel.Statics;
 import de.reneruck.tcd.ipp.datamodel.TemporalTransitionsStore;
+import de.reneruck.tcd.ipp.datamodel.TransitionExchangeBean;
 import de.reneruck.tcd.ipp.fsm.Action;
 import de.reneruck.tcd.ipp.fsm.FiniteStateMachine;
 import de.reneruck.tcd.ipp.fsm.SimpleState;
@@ -31,11 +32,13 @@ public class Connection extends Thread {
 	private ObjectInputStream in;
 	private FiniteStateMachine fsm;
 	private TemporalTransitionsStore transitionStore;
+	private TransitionExchangeBean transitionExchangeBean;
 
 	public Connection(Socket connection, TemporalTransitionsStore transitionsStore) {
 		this.connection = connection;
 		this.transitionStore = transitionsStore;
 		this.running = true;
+		this.transitionExchangeBean = new TransitionExchangeBean();
 		this.start();
 		setupFSM();
 	}
@@ -49,13 +52,13 @@ public class Connection extends Thread {
 		SimpleState state_SendData = new SimpleState("SendData");
 		SimpleState state_fin = new SimpleState("finish");
 
-		Action sendACK = new SendControlSignal(this.out, Statics.ACK);
-		Action sendRxServerAck = new SendControlSignal(this.out, Statics.RX_SERVER_ACK);
-		Action sendRxHeliAck = new SendControlSignal(this.out, Statics.RX_HELI_ACK);
-		Action receiveData = new ReceiveData(this.out, this.transitionStore);
-		Action sendData = new SendData(this.out, this.transitionStore);
-		Action sendFIN = new SendControlSignal(this.out, Statics.FIN);
-		Action sendFIN_ACK = new SendControlSignal(this.out, Statics.FINACK);
+		Action sendACK = new SendControlSignal(this.transitionExchangeBean, Statics.ACK);
+		Action sendRxServerAck = new SendControlSignal(this.transitionExchangeBean, Statics.RX_SERVER_ACK);
+		Action sendRxHeliAck = new SendControlSignal(this.transitionExchangeBean, Statics.RX_HELI_ACK);
+		Action receiveData = new ReceiveData(this.transitionExchangeBean, this.transitionStore);
+		Action sendData = new SendData(this.transitionExchangeBean, this.transitionStore);
+		Action sendFIN = new SendControlSignal(this.transitionExchangeBean, Statics.FIN);
+		Action sendFIN_ACK = new SendControlSignal(this.transitionExchangeBean, Statics.FINACK);
 		Action shutdownConnection = new ShutdownConnection(this);
 
 		Transition rxSyn = new Transition(new TransitionEvent(Statics.SYN), state_syn, sendACK);
@@ -84,7 +87,7 @@ public class Connection extends Thread {
 		state_fin.addTranstion(shutdown);
 
 		this.fsm.setStartState(state_start);
-
+		this.transitionExchangeBean.setFsm(this.fsm);
 	}
 
 	@Override
@@ -94,6 +97,8 @@ public class Connection extends Thread {
 			this.out = new ObjectOutputStream(this.connection.getOutputStream());
 			this.out.flush();
 			this.in = new ObjectInputStream(inputStream);
+			this.transitionExchangeBean.setOut(this.out);
+			this.transitionExchangeBean.setIn(this.in);
 			while (this.running) {
 				handleInput(deserialize(this.in.readObject()));
 			}
@@ -155,5 +160,17 @@ public class Connection extends Thread {
 
 	public void setRunning(boolean running) {
 		this.running = running;
+	}
+
+	public void shutdown() {
+		System.out.println("Shutting down Connection");
+		try {
+			this.out.close();
+			this.in.close();
+			this.connection.close();
+			this.running = false;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

@@ -12,6 +12,7 @@ import de.reneruck.tcd.ipp.datamodel.Datagram;
 import de.reneruck.tcd.ipp.datamodel.Statics;
 import de.reneruck.tcd.ipp.datamodel.TemporalTransitionsStore;
 import de.reneruck.tcd.ipp.datamodel.Transition;
+import de.reneruck.tcd.ipp.datamodel.TransitionExchangeBean;
 import de.reneruck.tcd.ipp.fsm.Action;
 import de.reneruck.tcd.ipp.fsm.TransitionEvent;
 
@@ -21,15 +22,19 @@ public class ReceiveData implements Action {
 	private Queue<Transition> queue = new LinkedBlockingQueue<Transition>();
 	private TemporalTransitionsStore transitionQueue;
 	private DatabaseQueryHandler databaseQueryHandler;
-
-	public ReceiveData(ObjectOutputStream out, TemporalTransitionsStore transitionsQueue) {
-		this.out = out;
+	private TransitionExchangeBean bean;
+	
+	public ReceiveData(TransitionExchangeBean transitionExchangeBean, TemporalTransitionsStore transitionsQueue) {
+		this.bean = transitionExchangeBean;
 		this.transitionQueue = transitionsQueue;
 		this.databaseQueryHandler = new DatabaseQueryHandler(this.queue, this.transitionQueue);
 	}
 
 	@Override
 	public void execute(TransitionEvent event) throws Exception {
+		if(this.out == null) {
+			this.out = this.bean.getOut();
+		}
 		if(!this.databaseQueryHandler.isRunning()) {
 			startServer();
 		}
