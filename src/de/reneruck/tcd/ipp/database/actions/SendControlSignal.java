@@ -18,8 +18,12 @@ public class SendControlSignal implements Action {
 
 	@Override
 	public void execute(TransitionEvent event) throws Exception {
-		this.out.writeObject(new Datagram(signal));
-		this.out.flush();
+		try {
+			this.out.writeObject(new Datagram(this.signal));
+			this.out.flush();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }
