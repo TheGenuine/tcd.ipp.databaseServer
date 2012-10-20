@@ -104,11 +104,11 @@ public class Connection extends Thread {
 			}
 			Thread.sleep(500);
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.err.println(e.getMessage());
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			System.err.println(e.getMessage());
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			System.err.println(e.getMessage());
 		}
 	}
 
