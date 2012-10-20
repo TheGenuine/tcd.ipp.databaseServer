@@ -8,9 +8,9 @@ import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import de.reneruck.tcd.ipp.database.DatabaseQueryHandler;
-import de.reneruck.tcd.ipp.database.TemporalTransitionsStore;
 import de.reneruck.tcd.ipp.datamodel.Datagram;
 import de.reneruck.tcd.ipp.datamodel.Statics;
+import de.reneruck.tcd.ipp.datamodel.TemporalTransitionsStore;
 import de.reneruck.tcd.ipp.datamodel.Transition;
 import de.reneruck.tcd.ipp.fsm.Action;
 import de.reneruck.tcd.ipp.fsm.TransitionEvent;

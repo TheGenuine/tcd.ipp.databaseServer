@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import de.reneruck.tcd.ipp.datamodel.Booking;
 import de.reneruck.tcd.ipp.datamodel.NewBookingTransition;
+import de.reneruck.tcd.ipp.datamodel.TemporalTransitionsStore;
 import de.reneruck.tcd.ipp.datamodel.Transition;
 import de.reneruck.tcd.ipp.datamodel.TransitionState;
 

@@ -6,10 +6,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import de.reneruck.tcd.ipp.database.TemporalTransitionsStore;
 import de.reneruck.tcd.ipp.datamodel.Callback;
 import de.reneruck.tcd.ipp.datamodel.Datagram;
 import de.reneruck.tcd.ipp.datamodel.Statics;
+import de.reneruck.tcd.ipp.datamodel.TemporalTransitionsStore;
 import de.reneruck.tcd.ipp.datamodel.Transition;
 import de.reneruck.tcd.ipp.datamodel.TransitionState;
 import de.reneruck.tcd.ipp.fsm.Action;

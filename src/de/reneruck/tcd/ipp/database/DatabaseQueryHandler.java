@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.Queue;
 
 import de.reneruck.tcd.ipp.datamodel.DatabaseConnection;
+import de.reneruck.tcd.ipp.datamodel.TemporalTransitionsStore;
 import de.reneruck.tcd.ipp.datamodel.Transition;
 import de.reneruck.tcd.ipp.datamodel.TransitionState;
 
