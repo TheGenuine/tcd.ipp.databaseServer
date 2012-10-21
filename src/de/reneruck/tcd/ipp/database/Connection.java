@@ -53,7 +53,6 @@ public class Connection extends Thread {
 
 		Action sendACK = new SendControlSignal(this.transitionExchangeBean, Statics.ACK);
 		Action sendRxServerAck = new SendControlSignal(this.transitionExchangeBean, Statics.RX_SERVER_ACK);
-		Action sendRxHeliAck = new SendControlSignal(this.transitionExchangeBean, Statics.RX_HELI_ACK);
 		Action receiveData = new ReceiveData(this.transitionExchangeBean, this.transitionStore);
 		Action sendData = new SendData(this.transitionExchangeBean, this.transitionStore);
 		Action sendFIN = new SendControlSignal(this.transitionExchangeBean, Statics.FIN);
