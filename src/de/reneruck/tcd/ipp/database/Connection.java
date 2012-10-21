@@ -8,6 +8,7 @@ import java.net.Socket;
 
 import com.google.gson.Gson;
 
+import de.reneruck.tcd.ipp.database.actions.FinackAndShutdown;
 import de.reneruck.tcd.ipp.database.actions.ReceiveData;
 import de.reneruck.tcd.ipp.database.actions.SendControlSignal;
 import de.reneruck.tcd.ipp.database.actions.SendData;
@@ -56,8 +57,8 @@ public class Connection extends Thread {
 		Action receiveData = new ReceiveData(this.transitionExchangeBean, this.transitionStore);
 		Action sendData = new SendData(this.transitionExchangeBean, this.transitionStore);
 		Action sendFIN = new SendControlSignal(this.transitionExchangeBean, Statics.FIN);
-		Action sendFIN_ACK = new SendControlSignal(this.transitionExchangeBean, Statics.FINACK);
 		Action shutdownConnection = new ShutdownConnection(this);
+		Action sendFIN_ACK_and_SHUTDOWN = new FinackAndShutdown(this.transitionExchangeBean, this);
 
 		Transition rxSyn = new Transition(new TransitionEvent(Statics.SYN), state_syn, sendACK);
 		Transition rxSynAck = new Transition(new TransitionEvent(Statics.SYNACK), state_waitRxMode, null);
@@ -68,9 +69,8 @@ public class Connection extends Thread {
 		Transition rxData = new Transition(new TransitionEvent(Statics.DATA), state_ReceiveData, receiveData);
 
 		Transition finishedSending = new Transition(new TransitionEvent(Statics.FINISH_RX_HELI), state_fin, sendFIN);
-		Transition rxFin = new Transition(new TransitionEvent(Statics.FIN), state_fin, sendFIN_ACK);
+		Transition rxFin = new Transition(new TransitionEvent(Statics.FIN), state_fin, sendFIN_ACK_and_SHUTDOWN);
 		Transition rxFinACK = new Transition(new TransitionEvent(Statics.FINACK), null, shutdownConnection);
-		Transition shutdown = new Transition(new TransitionEvent(Statics.SHUTDOWN), null, shutdownConnection);
 
 		state_start.addTranstion(rxSyn);
 		state_syn.addTranstion(rxSyn);
@@ -82,7 +82,6 @@ public class Connection extends Thread {
 		state_ReceiveData.addTranstion(rxData);
 		state_ReceiveData.addTranstion(rxFin);
 		state_fin.addTranstion(rxFinACK);
-		state_fin.addTranstion(shutdown);
 
 		this.fsm.setStartState(state_start);
 		this.transitionExchangeBean.setFsm(this.fsm);
