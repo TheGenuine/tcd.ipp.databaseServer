@@ -66,13 +66,7 @@ public class SendData implements Action, Callback {
 	public void handleCallback() {
 		this.sender = null;
 		try {
-			if(this.out == null) {
-				this.out = this.bean.getOut();
-			}
-			send(Statics.FIN);
 			this.bean.getFsm().handleEvent(new TransitionEvent(Statics.FINISH_RX_HELI));
-		} catch (IOException e) {
-			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
