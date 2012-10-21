@@ -8,7 +8,6 @@ import static org.mockito.Mockito.when;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
@@ -18,10 +17,7 @@ import java.net.Socket;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-
-import com.google.gson.Gson;
 
 import de.reneruck.tcd.ipp.datamodel.Datagram;
 import de.reneruck.tcd.ipp.datamodel.Statics;
@@ -33,6 +29,7 @@ public class FSMTest {
 
 	private Connection connection;
 	private ByteArrayOutputStream arrayOutputStream;
+	private ByteArrayOutputStream preservedStream;
 
 	@Before
 	public void setUp() throws Exception {
@@ -52,6 +49,9 @@ public class FSMTest {
 		this.connection = new Connection(socketConnection, transitionsStore);
 		this.connection.setRunning(false);
 		Thread.sleep(500);
+		
+		this.preservedStream = this.arrayOutputStream;
+		
 	}
 
 	@After
@@ -81,27 +81,27 @@ public class FSMTest {
 		Thread.sleep(500);
 		this.arrayOutputStream.reset();
 		
-		State synState = getCurrentFsmStateFromConnection();
-		
 		send(Statics.SYNACK);
 		Thread.sleep(500);
 		
 		State fsmState = getCurrentFsmStateFromConnection();
 		assertEquals("waitRxMode", fsmState.getIdentifier());
+		
+		
 	}
 	
 	@Test
 	public void testRxModeReceive() throws Exception {
 		send(Statics.SYN);
 		Thread.sleep(100);
-		this.arrayOutputStream.reset();
+		readObjectOutputStream();
 		
 		send(Statics.SYNACK);
 		Thread.sleep(100);
-		this.arrayOutputStream.reset();
+		readObjectOutputStream();
 		
 		send(Statics.RX_SERVER);
-		Thread.sleep(100);
+		Thread.sleep(200);
 		Object readObject = readObjectOutputStream();
 		
 		assertTrue(readObject instanceof Datagram);
@@ -113,10 +113,12 @@ public class FSMTest {
 	
 	private Object readObjectOutputStream() {
 		byte[] byteArray = this.arrayOutputStream.toByteArray();
+		String message = new String(byteArray);
 		try {
-			ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(byteArray));
-			this.arrayOutputStream.reset();
-			return ois.readObject();
+			ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArray);
+			ObjectInputStream ois = new ObjectInputStream(byteArrayInputStream);
+			Object readObject = ois.readObject();
+			return readObject;
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
