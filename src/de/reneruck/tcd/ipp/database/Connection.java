@@ -26,7 +26,6 @@ public class Connection extends Thread {
 
 	private Socket connection;
 	private boolean running = false;
-	private boolean clientAck;
 	private Gson gson = new Gson();
 	private ObjectOutputStream out;
 	private ObjectInputStream in;
@@ -103,12 +102,8 @@ public class Connection extends Thread {
 				handleInput(deserialize(this.in.readObject()));
 			}
 			Thread.sleep(500);
-		} catch (IOException e) {
-			System.err.println(e.getMessage());
-		} catch (InterruptedException e) {
-			System.err.println(e.getMessage());
-		} catch (ClassNotFoundException e) {
-			System.err.println(e.getMessage());
+		} catch (IOException | InterruptedException | ClassNotFoundException e) {
+			e.printStackTrace();
 		}
 	}
 
