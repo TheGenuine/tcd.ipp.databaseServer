@@ -100,7 +100,11 @@ public class Connection extends Thread {
 				handleInput(deserialize(this.in.readObject()));
 			}
 			Thread.sleep(500);
-		} catch (IOException | InterruptedException | ClassNotFoundException e) {
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
