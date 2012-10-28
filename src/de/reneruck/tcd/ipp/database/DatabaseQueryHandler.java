@@ -4,10 +4,10 @@ import java.net.ConnectException;
 import java.util.Date;
 import java.util.Queue;
 
-import de.reneruck.tcd.ipp.datamodel.DatabaseConnection;
-import de.reneruck.tcd.ipp.datamodel.TemporalTransitionsStore;
-import de.reneruck.tcd.ipp.datamodel.Transition;
-import de.reneruck.tcd.ipp.datamodel.TransitionState;
+import de.reneruck.tcd.ipp.datamodel.database.MySqlDatabaseConnection;
+import de.reneruck.tcd.ipp.datamodel.transition.TemporalTransitionsStore;
+import de.reneruck.tcd.ipp.datamodel.transition.Transition;
+import de.reneruck.tcd.ipp.datamodel.transition.TransitionState;
 
 public class DatabaseQueryHandler extends Thread {
 
@@ -41,7 +41,7 @@ public class DatabaseQueryHandler extends Thread {
 			if(TransitionState.ACKNOWLEGED.equals(transition.getTransitionState())) {
 				this.transitionQueue.removeTransition(transition);
 			} else if(TransitionState.PENDING.equals(transition.getTransitionState()) ) {
-				transition.performTransition(new DatabaseConnection());
+				transition.performTransition(new MySqlDatabaseConnection());
 				transition.setTransitionState(TransitionState.PROCESSED);
 				transition.setHandlingDate(new Date(System.currentTimeMillis()));
 				this.transitionQueue.addTransition(transition);

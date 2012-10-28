@@ -9,7 +9,7 @@ import java.util.Map;
 import de.reneruck.tcd.ipp.datamodel.Callback;
 import de.reneruck.tcd.ipp.datamodel.Datagram;
 import de.reneruck.tcd.ipp.datamodel.Statics;
-import de.reneruck.tcd.ipp.datamodel.Transition;
+import de.reneruck.tcd.ipp.datamodel.transition.Transition;
 
 public class DataSender extends Thread {
 

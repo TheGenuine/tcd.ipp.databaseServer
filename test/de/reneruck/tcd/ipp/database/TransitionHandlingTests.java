@@ -11,10 +11,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.reneruck.tcd.ipp.datamodel.Booking;
-import de.reneruck.tcd.ipp.datamodel.NewBookingTransition;
-import de.reneruck.tcd.ipp.datamodel.TemporalTransitionsStore;
-import de.reneruck.tcd.ipp.datamodel.Transition;
-import de.reneruck.tcd.ipp.datamodel.TransitionState;
+import de.reneruck.tcd.ipp.datamodel.transition.NewBookingTransition;
+import de.reneruck.tcd.ipp.datamodel.transition.TemporalTransitionsStore;
+import de.reneruck.tcd.ipp.datamodel.transition.Transition;
+import de.reneruck.tcd.ipp.datamodel.transition.TransitionState;
 
 public class TransitionHandlingTests {
 
