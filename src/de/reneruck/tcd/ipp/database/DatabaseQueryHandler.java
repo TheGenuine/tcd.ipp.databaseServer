@@ -4,7 +4,7 @@ import java.net.ConnectException;
 import java.util.Date;
 import java.util.Queue;
 
-import de.reneruck.tcd.ipp.datamodel.database.MySqlDatabaseConnection;
+import de.reneruck.tcd.ipp.datamodel.database.SqliteDatabaseConnection;
 import de.reneruck.tcd.ipp.datamodel.transition.TemporalTransitionsStore;
 import de.reneruck.tcd.ipp.datamodel.transition.Transition;
 import de.reneruck.tcd.ipp.datamodel.transition.TransitionState;
@@ -41,9 +41,15 @@ public class DatabaseQueryHandler extends Thread {
 			if(TransitionState.ACKNOWLEGED.equals(transition.getTransitionState())) {
 				this.transitionQueue.removeTransition(transition);
 			} else if(TransitionState.PENDING.equals(transition.getTransitionState()) ) {
-				transition.performTransition(new MySqlDatabaseConnection());
+				
+				SqliteDatabaseConnection connection = new SqliteDatabaseConnection("Database.db");
+				transition.performTransition(connection);
+				connection.close();
+				
 				transition.setTransitionState(TransitionState.PROCESSED);
 				transition.setHandlingDate(new Date(System.currentTimeMillis()));
+				
+				
 				this.transitionQueue.addTransition(transition);
 			} else {
 				System.err.println("Invalid System TransitionState: " + transition.getTransitionState() + " no processing");
