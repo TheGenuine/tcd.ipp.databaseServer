@@ -4,6 +4,7 @@ import java.net.ConnectException;
 import java.util.Date;
 import java.util.Queue;
 
+import de.reneruck.tcd.ipp.datamodel.Statics;
 import de.reneruck.tcd.ipp.datamodel.database.SqliteDatabaseConnection;
 import de.reneruck.tcd.ipp.datamodel.transition.TemporalTransitionsStore;
 import de.reneruck.tcd.ipp.datamodel.transition.Transition;
@@ -42,7 +43,7 @@ public class DatabaseQueryHandler extends Thread {
 				this.transitionQueue.removeTransition(transition);
 			} else if(TransitionState.PENDING.equals(transition.getTransitionState()) ) {
 				
-				SqliteDatabaseConnection connection = new SqliteDatabaseConnection("Database.db");
+				SqliteDatabaseConnection connection = new SqliteDatabaseConnection(Statics.DB_FILE);
 				transition.performTransition(connection);
 				connection.close();
 				
