@@ -23,6 +23,7 @@ public class SendData implements Action, Callback {
 	private Map<Long, Transition> dataset = new HashMap<Long, Transition>();
 	private TemporalTransitionsStore transitionsStore;
 	private TransitionExchangeBean bean;
+	private boolean rxModeAck = false;
 
 	public SendData(TransitionExchangeBean transitionExchangeBean, TemporalTransitionsStore transitionsStore ) {
 		this.bean = transitionExchangeBean;
@@ -34,8 +35,10 @@ public class SendData implements Action, Callback {
 		if(this.out == null) {
 			this.out = this.bean.getOut();
 		}
-		
-		send(Statics.RX_HELI_ACK);
+		if(!this.rxModeAck) {
+			send(Statics.RX_HELI_ACK); 
+			this.rxModeAck = true;
+		}
 		
 		if(this.sender == null) {
 			initializeDataSender();
@@ -73,6 +76,7 @@ public class SendData implements Action, Callback {
 	}
 
 	private void send(String message) throws IOException {
+		System.out.println("Sending> " + message);
 		this.out.writeObject(new Datagram(message));
 		this.out.flush();
 	}
