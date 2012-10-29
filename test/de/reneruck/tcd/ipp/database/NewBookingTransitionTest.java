@@ -12,12 +12,13 @@ import org.junit.Test;
 
 import de.reneruck.tcd.ipp.datamodel.Airport;
 import de.reneruck.tcd.ipp.datamodel.Booking;
+import de.reneruck.tcd.ipp.datamodel.database.DatabaseConnection;
 import de.reneruck.tcd.ipp.datamodel.database.SqliteDatabaseConnection;
 import de.reneruck.tcd.ipp.datamodel.transition.NewBookingTransition;
 
 public class NewBookingTransitionTest {
 
-	private SqliteDatabaseConnection databaseConnection;
+	private DatabaseConnection databaseConnection;
 
 	@Before
 	public void setUp() throws FileNotFoundException, IOException {
@@ -28,8 +29,14 @@ public class NewBookingTransitionTest {
 
 	@Test
 	public void test1() throws ConnectException{
+		int bookingsCountBefore = this.databaseConnection.getBookingsCount();
+		
 		Booking booking =  new Booking("Karl Klammer", new Date(1361728800000L), Airport.city);
 		NewBookingTransition transition = new NewBookingTransition(booking);
 		transition.performTransition(this.databaseConnection);
+		
+		int bookingsCountAfter = this.databaseConnection.getBookingsCount();
+		
+		assertTrue(bookingsCountBefore < bookingsCountAfter);
 	}
 }
