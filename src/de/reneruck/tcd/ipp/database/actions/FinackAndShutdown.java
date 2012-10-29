@@ -21,6 +21,7 @@ public class FinackAndShutdown implements Action {
 
 	@Override
 	public void execute(TransitionEvent event) throws Exception {
+		System.out.println("Sending> " + Statics.FINACK);
 		ObjectOutputStream out = this.bean.getOut();
 		out.writeObject(new Datagram(Statics.FINACK));
 		out.flush();

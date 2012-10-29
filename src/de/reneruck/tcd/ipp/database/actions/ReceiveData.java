@@ -48,6 +48,7 @@ public class ReceiveData implements Action {
 	}
 
 	private void sendAck(Object content) throws IOException {
+		System.out.println("Sending> " + Statics.ACK);
 		Map<String, Object> datagramPayload = new HashMap<String, Object>();
 		datagramPayload.put(Statics.TRAMSITION_ID, ((Transition)content).getTransitionId());
 		this.out.writeObject(new Datagram(Statics.ACK, datagramPayload));

@@ -24,7 +24,7 @@ public class SendControlSignal implements Action {
 			this.out = this.bean.getOut();
 		}
 		try {
-			System.out.println("Sending " + this.signal);
+			System.out.println("Sending> " + this.signal);
 			this.out.writeObject(new Datagram(this.signal));
 			this.out.flush();
 		} catch (Exception e) {
