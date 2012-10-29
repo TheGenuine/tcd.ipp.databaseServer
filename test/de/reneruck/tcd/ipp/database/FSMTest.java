@@ -17,6 +17,7 @@ import java.net.Socket;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import de.reneruck.tcd.ipp.datamodel.Datagram;
@@ -91,6 +92,7 @@ public class FSMTest {
 	}
 	
 	@Test
+	@Ignore
 	public void testRxModeReceive() throws Exception {
 		send(Statics.SYN);
 		Thread.sleep(100);
