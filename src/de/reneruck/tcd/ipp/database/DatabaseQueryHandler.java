@@ -49,8 +49,7 @@ public class DatabaseQueryHandler extends Thread {
 				
 				transition.setTransitionState(TransitionState.PROCESSED);
 				transition.setHandlingDate(new Date(System.currentTimeMillis()));
-				
-				
+
 				this.transitionQueue.addTransition(transition);
 			} else {
 				System.err.println("Invalid System TransitionState: " + transition.getTransitionState() + " no processing");
