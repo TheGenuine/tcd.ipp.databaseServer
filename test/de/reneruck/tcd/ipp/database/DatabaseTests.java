@@ -148,4 +148,17 @@ public class DatabaseTests {
 		int bookingsCount = this.databaseConnection.makeABooking(booking, 961);
 		assertTrue(0 < bookingsCount);
 	}
+	
+	/**
+	 * 
+	 * @throws ConnectException
+	 */
+	@Test
+	public void testCancelBooking() throws ConnectException {
+		int bookingsCountBefore = this.databaseConnection.getBookingsCount();
+		this.databaseConnection.removeBooking(1351181776L);
+		int bookingsCountAfter = this.databaseConnection.getBookingsCount();
+		
+		assertTrue(bookingsCountBefore > bookingsCountAfter);
+	}
 }
