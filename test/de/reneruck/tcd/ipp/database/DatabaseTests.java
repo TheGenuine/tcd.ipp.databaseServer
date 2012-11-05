@@ -14,20 +14,22 @@ import org.junit.Test;
 
 import de.reneruck.tcd.ipp.datamodel.Airport;
 import de.reneruck.tcd.ipp.datamodel.Booking;
+import de.reneruck.tcd.ipp.datamodel.database.DBUtils;
 import de.reneruck.tcd.ipp.datamodel.database.DatabaseConnection;
 import de.reneruck.tcd.ipp.datamodel.database.MySqlDatabaseConnection;
 import de.reneruck.tcd.ipp.datamodel.database.SqliteDatabaseConnection;
+import de.reneruck.tcd.ipp.datamodel.exceptions.DatabaseException;
 
 public class DatabaseTests {
 
 	private DatabaseConnection databaseConnection;
 
 	@Before
-	public void setUp() throws FileNotFoundException, IOException {
+	public void setUp() throws FileNotFoundException, IOException, DatabaseException {
 		this.databaseConnection = new SqliteDatabaseConnection("");
-		TestData.setupDBStructure(this.databaseConnection);
-		TestData.setupInitData(this.databaseConnection);
-		TestData.insertTestData(this.databaseConnection);
+		DBUtils.setupDBStructure(this.databaseConnection);
+		DBUtils.setupInitData(this.databaseConnection);
+		DBUtils.insertTestData(this.databaseConnection);
 	}
 
 	@After

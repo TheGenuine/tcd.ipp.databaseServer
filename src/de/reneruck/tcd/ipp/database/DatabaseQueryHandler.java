@@ -6,6 +6,7 @@ import java.util.Queue;
 
 import de.reneruck.tcd.ipp.datamodel.Statics;
 import de.reneruck.tcd.ipp.datamodel.database.SqliteDatabaseConnection;
+import de.reneruck.tcd.ipp.datamodel.exceptions.DatabaseException;
 import de.reneruck.tcd.ipp.datamodel.transition.TemporalTransitionsStore;
 import de.reneruck.tcd.ipp.datamodel.transition.Transition;
 import de.reneruck.tcd.ipp.datamodel.transition.TransitionState;
@@ -55,7 +56,9 @@ public class DatabaseQueryHandler extends Thread {
 				System.err.println("Invalid System TransitionState: " + transition.getTransitionState() + " no processing");
 			}
 		} catch (ConnectException e) {
-			e.printStackTrace();
+			System.err.println(e.getMessage());
+		} catch (DatabaseException e) {
+			System.err.println(e.getMessage());
 		}
 	}
 
