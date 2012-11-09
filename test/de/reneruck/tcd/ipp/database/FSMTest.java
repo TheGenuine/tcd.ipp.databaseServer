@@ -35,7 +35,7 @@ public class FSMTest {
 	@Before
 	public void setUp() throws Exception {
 		
-		TemporalTransitionsStore transitionsStore = new TemporalTransitionsStore();
+		TemporalTransitionsStore transitionsStore = new TemporalTransitionsStore("");
 		Socket socketConnection = mock(Socket.class);
 		
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -47,7 +47,7 @@ public class FSMTest {
 		
 		when(socketConnection.getOutputStream()).thenReturn(arrayOutputStream);
 		when(socketConnection.getInputStream()).thenReturn(byteArrayInputStream);
-		this.connection = new Connection(socketConnection, transitionsStore);
+		this.connection = new Connection(socketConnection, transitionsStore, new DatabaseQueryHandler(null, null, null));
 		this.connection.setRunning(false);
 		Thread.sleep(500);
 		

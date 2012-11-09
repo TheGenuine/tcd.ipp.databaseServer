@@ -5,6 +5,8 @@ import static org.junit.Assert.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.ConnectException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
 
 import org.junit.After;
@@ -14,11 +16,15 @@ import org.junit.Test;
 
 import de.reneruck.tcd.ipp.datamodel.Airport;
 import de.reneruck.tcd.ipp.datamodel.Booking;
+import de.reneruck.tcd.ipp.datamodel.Statics;
 import de.reneruck.tcd.ipp.datamodel.database.DBUtils;
 import de.reneruck.tcd.ipp.datamodel.database.DatabaseConnection;
 import de.reneruck.tcd.ipp.datamodel.database.MySqlDatabaseConnection;
 import de.reneruck.tcd.ipp.datamodel.database.SqliteDatabaseConnection;
 import de.reneruck.tcd.ipp.datamodel.exceptions.DatabaseException;
+import de.reneruck.tcd.ipp.datamodel.transition.NewBookingTransition;
+import de.reneruck.tcd.ipp.datamodel.transition.TemporalTransitionsStore;
+import de.reneruck.tcd.ipp.datamodel.transition.Transition;
 
 public class DatabaseTests {
 
@@ -160,5 +166,54 @@ public class DatabaseTests {
 		int bookingsCountAfter = this.databaseConnection.getBookingsCount();
 		
 		assertTrue(bookingsCountBefore > bookingsCountAfter);
+	}
+	
+	/**
+	 * 
+	 * @throws ConnectException
+	 * @throws DatabaseException 
+	 * @throws SQLException 
+	 */
+	@Test
+	public void testPersistTransitionQueueEntry() throws ConnectException, DatabaseException, SQLException {
+		TemporalTransitionsStore queue = new TemporalTransitionsStore("");
+		Booking booking = new Booking("Harry Horse", new Date(1353520800000L), Airport.city);
+		Transition trans = new NewBookingTransition(booking);
+		
+		queue.addTransition(trans);
+		
+		sleep();
+		
+		ResultSet resultSet = this.databaseConnection.executeQuery("SELECT Transition_ID FROM TransitionQueue");
+		int storedTransitionId = resultSet.getInt(1);
+		assertEquals(trans.getTransitionId(), storedTransitionId);
+	}
+
+	private void sleep() {
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 
+	 * @throws ConnectException
+	 * @throws DatabaseException 
+	 * @throws SQLException 
+	 */
+	@Test
+	public void testDePersistTransitionQueueEntry() throws ConnectException, DatabaseException, SQLException {
+		TemporalTransitionsStore queue = new TemporalTransitionsStore("");
+		Booking booking = new Booking("Harry Horse", new Date(1353520800000L), Airport.city);
+		Transition trans = new NewBookingTransition(booking);
+		
+		queue.addTransition(trans);
+		queue.addTransition(trans);
+		queue.removeTransition(trans);
+		
+		ResultSet resultSet = this.databaseConnection.executeQuery("SELECT Transition_ID FROM TransitionQueue");
+		assertTrue(resultSet.getRow() == 0);
 	}
 }

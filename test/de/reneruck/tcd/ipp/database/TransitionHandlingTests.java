@@ -25,9 +25,9 @@ public class TransitionHandlingTests {
 	@Before
 	public void setUp() throws Exception {
 		this.dbQueue = new LinkedBlockingQueue<Transition>(new LinkedList<Transition>());
-		this.transitionsQueue = new TemporalTransitionsStore();
+		this.transitionsQueue = new TemporalTransitionsStore("");
 		
-		DatabaseQueryHandler queryHandler = new DatabaseQueryHandler(this.dbQueue, this.transitionsQueue);
+		DatabaseQueryHandler queryHandler = new DatabaseQueryHandler(this.dbQueue, this.transitionsQueue, null);
 		queryHandler.setRunning(true);
 		queryHandler.start();
 	}

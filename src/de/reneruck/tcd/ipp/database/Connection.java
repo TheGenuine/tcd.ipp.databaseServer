@@ -33,12 +33,14 @@ public class Connection extends Thread {
 	private FiniteStateMachine fsm;
 	private TemporalTransitionsStore transitionStore;
 	private TransitionExchangeBean transitionExchangeBean;
+	private DatabaseQueryHandler databaseQueryHandler;
 
-	public Connection(Socket connection, TemporalTransitionsStore transitionsStore) {
+	public Connection(Socket connection, TemporalTransitionsStore transitionsStore, DatabaseQueryHandler queryHandler) {
 		this.connection = connection;
 		this.transitionStore = transitionsStore;
 		this.running = true;
 		this.transitionExchangeBean = new TransitionExchangeBean();
+		this.databaseQueryHandler = queryHandler;
 		this.start();
 		setupFSM();
 	}
@@ -54,7 +56,7 @@ public class Connection extends Thread {
 
 		Action sendACK = new SendControlSignal(this.transitionExchangeBean, Statics.ACK);
 		Action sendRxServerAck = new SendControlSignal(this.transitionExchangeBean, Statics.RX_SERVER_ACK);
-		Action receiveData = new ReceiveData(this.transitionExchangeBean, this.transitionStore);
+		Action receiveData = new ReceiveData(this.transitionExchangeBean, this.databaseQueryHandler);
 		Action sendData = new SendData(this.transitionExchangeBean, this.transitionStore);
 		Action sendFIN = new SendControlSignal(this.transitionExchangeBean, Statics.FIN);
 		Action shutdownConnection = new ShutdownConnection(this);
@@ -98,8 +100,8 @@ public class Connection extends Thread {
 			this.transitionExchangeBean.setIn(this.in);
 			while (this.running) {
 				handleInput(deserialize(this.in.readObject()));
+				Thread.sleep(500);
 			}
-			Thread.sleep(500);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InterruptedException e) {

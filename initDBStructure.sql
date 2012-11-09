@@ -37,27 +37,8 @@ CREATE  TABLE IF NOT EXISTS `Flight` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ;
-CREATE  TABLE IF NOT EXISTS `IncomingTransitionQueue` (
-  `idTransitionQueue` INTEGER ,
-  `Transition` TEXT NOT NULL ,
-  `Bookings_ID` INTEGER NOT NULL ,
-  `Bookings_booking_id` BIGINT(20) NOT NULL ,
-  PRIMARY KEY (`idTransitionQueue`, `Bookings_ID`, `Bookings_booking_id`) ,
-  CONSTRAINT `fk_TransitionQueue_Bookings1`
-    FOREIGN KEY (`Bookings_ID` )
-    REFERENCES `Bookings` (`ID` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-;
-CREATE  TABLE IF NOT EXISTS `OutgoingTransitionQueue` (
-  `idOutgoingTransitionQueue` INTEGER ,
-  `Bookings_ID` INTEGER NOT NULL ,
-  `Bookings_booking_id` BIGINT(20) NOT NULL ,
-  `Transition` TEXT NOT NULL ,
-  PRIMARY KEY (`idOutgoingTransitionQueue`, `Bookings_ID`, `Bookings_booking_id`) ,
-  CONSTRAINT `fk_OutgoingTransitionQueue_Bookings1`
-    FOREIGN KEY (`Bookings_ID` )
-    REFERENCES `Bookings` (`ID` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+CREATE  TABLE IF NOT EXISTS `TransitionQueue` (
+  `idTransitionQueue` INTEGER PRIMARY KEY,
+  `Transition_ID` INTEGER NOT NULL ,
+  `Transition` TEXT NOT NULL)
 ;
