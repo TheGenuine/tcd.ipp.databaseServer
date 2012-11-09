@@ -10,6 +10,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.reneruck.tcd.ipp.databaseServer.DatabaseQueryHandler;
 import de.reneruck.tcd.ipp.datamodel.Airport;
 import de.reneruck.tcd.ipp.datamodel.Booking;
 import de.reneruck.tcd.ipp.datamodel.transition.NewBookingTransition;

@@ -20,6 +20,8 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import de.reneruck.tcd.ipp.databaseServer.Connection;
+import de.reneruck.tcd.ipp.databaseServer.DatabaseQueryHandler;
 import de.reneruck.tcd.ipp.datamodel.Datagram;
 import de.reneruck.tcd.ipp.datamodel.Statics;
 import de.reneruck.tcd.ipp.datamodel.transition.TemporalTransitionsStore;
