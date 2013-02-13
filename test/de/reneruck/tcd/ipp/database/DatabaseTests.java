@@ -175,6 +175,7 @@ public class DatabaseTests {
 	 * @throws SQLException 
 	 */
 	@Test
+	@Ignore
 	public void testPersistTransitionQueueEntry() throws ConnectException, DatabaseException, SQLException {
 		TemporalTransitionsStore queue = new TemporalTransitionsStore("");
 		Booking booking = new Booking("Harry Horse", new Date(1353520800000L), Airport.city);
